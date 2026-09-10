@@ -1,5 +1,5 @@
 <footer>
-	<p>&copy; 2026 - Our website</p>
+	<p>&copy; {new Date().getFullYear()} - Our website</p>
 </footer>
 
 <style>

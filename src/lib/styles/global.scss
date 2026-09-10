@@ -2,8 +2,11 @@
 @use '_reset';
 @use '_utilities';
 @use '_variables';
+@use '_fonts';
 
 *{margin:0 auto}
+
 body {
-  margin: 0;
+  font-family: var(--font-sans);
+  font-size:0.9rem;
 }
