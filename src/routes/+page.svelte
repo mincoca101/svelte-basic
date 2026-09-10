@@ -1,2 +1,7 @@
-<h1>Svelte Basic Project</h1>
-<p>Documentation</p>
+<script lang="ts">
+	import SEO from '$lib/components/SEO.svelte';
+</script>
+
+<SEO title="Trang chủ" description="Welcome to our website."/>
+
+<h1>Trang chủ</h1>
