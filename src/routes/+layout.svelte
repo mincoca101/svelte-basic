@@ -3,9 +3,10 @@
 	import { site } from '$lib/config/site';
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import Navbar from '$lib/components/Navbar.svelte';
 
 	import '$lib/styles/global.scss';
-	
+	import '$lib/js/Navbar.js';
 
 	let { children } = $props();
 </script>
@@ -43,7 +44,7 @@
 </svelte:head>
 
 <Header />
-
+<Navbar />
 <main>
 	{@render children()}
 </main>

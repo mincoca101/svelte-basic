@@ -1,0 +1,355 @@
+// ========================================
+// Bootstrap-like Grid SCSS
+// Based on Bootstrap 5.3 Grid
+// ========================================
+
+// ----------------------------------------
+// Variables
+// ----------------------------------------
+
+$grid-columns: 12 !default;
+$grid-gutter-width: 1.5rem !default;
+$grid-row-columns: 6 !default;
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px
+) !default;
+
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+  xxl: 1320px
+) !default;
+
+
+// ----------------------------------------
+// Functions
+// ----------------------------------------
+
+@function breakpoint-min($name, $breakpoints: $grid-breakpoints) {
+  $min: map-get($breakpoints, $name);
+
+  @if $min != 0 {
+    @return $min;
+  }
+
+  @return null;
+}
+
+
+// ----------------------------------------
+// Mixins
+// ----------------------------------------
+
+@mixin media-breakpoint-up($name) {
+  $min: breakpoint-min($name);
+
+  @if $min {
+    @media (min-width: $min) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+
+@mixin make-container($padding-x: $grid-gutter-width) {
+  width: 100%;
+  padding-right: calc($padding-x / 2);
+  padding-left: calc($padding-x / 2);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+
+@mixin make-row($gutter: $grid-gutter-width) {
+  --bs-gutter-x: #{$gutter};
+  --bs-gutter-y: 0;
+
+  display: flex;
+  flex-wrap: wrap;
+
+  margin-top: calc(-1 * var(--bs-gutter-y));
+  margin-right: calc(-0.5 * var(--bs-gutter-x));
+  margin-left: calc(-0.5 * var(--bs-gutter-x));
+}
+
+
+@mixin make-col-ready() {
+  box-sizing: border-box;
+
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100%;
+
+  padding-right: calc(var(--bs-gutter-x) * 0.5);
+  padding-left: calc(var(--bs-gutter-x) * 0.5);
+
+  margin-top: var(--bs-gutter-y);
+}
+
+
+@mixin make-col($size: false, $columns: $grid-columns) {
+  @if $size {
+    flex: 0 0 auto;
+    width: percentage($size / $columns);
+  } @else {
+    flex: 1 0 0%;
+  }
+}
+
+
+@mixin make-col-offset($size, $columns: $grid-columns) {
+  margin-left: percentage($size / $columns);
+}
+
+
+@mixin row-cols($count) {
+  > * {
+    flex: 0 0 auto;
+    width: percentage(1 / $count);
+  }
+}
+
+
+// ========================================
+// Container
+// ========================================
+
+.container,
+.container-fluid {
+  @include make-container();
+}
+
+
+// Responsive containers
+@each $breakpoint, $container-max-width in $container-max-widths {
+  .container-#{$breakpoint} {
+    @include make-container();
+  }
+
+  @include media-breakpoint-up($breakpoint) {
+    .container,
+    .container-#{$breakpoint} {
+      max-width: $container-max-width;
+    }
+  }
+}
+
+
+// ========================================
+// Row
+// ========================================
+
+.row {
+  @include make-row();
+}
+
+
+// ========================================
+// Columns
+// ========================================
+
+.row > * {
+  @include make-col-ready();
+}
+
+
+// ----------------------------------------
+// .col
+// ----------------------------------------
+
+.col {
+  @include make-col();
+}
+
+
+// ----------------------------------------
+// .col-1 -> .col-12
+// ----------------------------------------
+
+@for $i from 1 through $grid-columns {
+  .col-#{$i} {
+    @include make-col($i);
+  }
+}
+
+
+// ----------------------------------------
+// .offset-1 -> .offset-12
+// ----------------------------------------
+
+@for $i from 0 through $grid-columns {
+  @if $i == 0 {
+    .offset-0 {
+      margin-left: 0;
+    }
+  } @else {
+    .offset-#{$i} {
+      @include make-col-offset($i);
+    }
+  }
+}
+
+
+// ========================================
+// Row Columns
+// ========================================
+
+.row-cols-auto {
+  > * {
+    flex: 0 0 auto;
+    width: auto;
+  }
+}
+
+@for $i from 1 through $grid-row-columns {
+  .row-cols-#{$i} {
+    @include row-cols($i);
+  }
+}
+
+
+// ========================================
+// Responsive Columns
+// ========================================
+
+@each $breakpoint, $breakpoint-value in $grid-breakpoints {
+
+  @include media-breakpoint-up($breakpoint) {
+
+    // ------------------------------------
+    // .col-sm
+    // .col-md
+    // .col-lg
+    // ...
+    // ------------------------------------
+
+    .col-#{$breakpoint} {
+      @include make-col();
+    }
+
+
+    // ------------------------------------
+    // .col-sm-1 -> .col-sm-12
+    // ------------------------------------
+
+    @for $i from 1 through $grid-columns {
+      .col-#{$breakpoint}-#{$i} {
+        @include make-col($i);
+      }
+    }
+
+
+    // ------------------------------------
+    // .col-sm-auto
+    // ------------------------------------
+
+    .col-#{$breakpoint}-auto {
+      flex: 0 0 auto;
+      width: auto;
+    }
+
+
+    // ------------------------------------
+    // Offset
+    // ------------------------------------
+
+    .offset-#{$breakpoint}-0 {
+      margin-left: 0;
+    }
+
+    @for $i from 1 through $grid-columns {
+      .offset-#{$breakpoint}-#{$i} {
+        @include make-col-offset($i);
+      }
+    }
+
+
+    // ------------------------------------
+    // Row columns
+    // ------------------------------------
+
+    .row-cols-#{$breakpoint}-auto {
+      > * {
+        flex: 0 0 auto;
+        width: auto;
+      }
+    }
+
+    @for $i from 1 through $grid-row-columns {
+      .row-cols-#{$breakpoint}-#{$i} {
+        @include row-cols($i);
+      }
+    }
+  }
+}
+
+
+// ========================================
+// Gutter utilities
+// ========================================
+
+.g-0,
+.gx-0 {
+  --bs-gutter-x: 0;
+}
+
+.g-0,
+.gy-0 {
+  --bs-gutter-y: 0;
+}
+
+
+@for $i from 1 through 5 {
+  $gutter: $i * 0.25rem;
+
+  .g-#{$i} {
+    --bs-gutter-x: #{$gutter};
+    --bs-gutter-y: #{$gutter};
+  }
+
+  .gx-#{$i} {
+    --bs-gutter-x: #{$gutter};
+  }
+
+  .gy-#{$i} {
+    --bs-gutter-y: #{$gutter};
+  }
+}
+
+
+// ========================================
+// Responsive gutter utilities
+// ========================================
+
+@each $breakpoint, $breakpoint-value in $grid-breakpoints {
+
+  @include media-breakpoint-up($breakpoint) {
+
+    @for $i from 0 through 5 {
+      $gutter: $i * 0.25rem;
+
+      .g-#{$breakpoint}-#{$i} {
+        --bs-gutter-x: #{$gutter};
+        --bs-gutter-y: #{$gutter};
+      }
+
+      .gx-#{$breakpoint}-#{$i} {
+        --bs-gutter-x: #{$gutter};
+      }
+
+      .gy-#{$breakpoint}-#{$i} {
+        --bs-gutter-y: #{$gutter};
+      }
+    }
+  }
+}
