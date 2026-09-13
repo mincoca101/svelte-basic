@@ -41,6 +41,13 @@
 		rel="manifest"
 		href="/manifest.webmanifest"
 	/>
+	
+	<!-- CSS -->
+	<link rel="stylesheet" href="/css/custom.css">
+	<!-- JS -->
+	<script src="/js/library.js"></script>
+
+
 </svelte:head>
 
 <Header />
